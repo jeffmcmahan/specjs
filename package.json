@@ -1,0 +1,14 @@
+{
+  "name": "@jeffmcmahan/specjs",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --experimental-modules ./test.js"
+  },
+  "author": "Jeff McMahan",
+  "publishConfig": {
+     "access": "public"
+  }
+}
