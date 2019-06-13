@@ -8,6 +8,7 @@ let testStart = 0
 const runTests = async () => {
 
 	// Execute tests 1-at-a-time until they're all done.
+	// Note: Triggers tests, which are in continuation passing style.
 
 	if (tests.length) {
 		mocks.clear()
@@ -41,12 +42,21 @@ export const fn = f => {
 	return wrapped
 }
 
-export const test = (
+export const test = (...args) => {
 	
-	// Example - test(done => { ... done() })
+	// Registers a new test case.
+	// Note: If 2 arguments, the first is a file URL indicating where the 
+	// test is being run from - if from node_modules, it'll be ignored.
 
-	f => tests.push(f)
-)
+	if (args.length === 2) {
+		const [meta, test] = args
+		if (!meta.url.includes('/node_modules/')) {
+			tests.push(test)
+		}
+	} else {
+		tests.push(args[0])
+	}
+}
 
 export const onReady = (
 
