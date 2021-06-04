@@ -48,7 +48,7 @@ import {foo} from './foo.mjs' // <-- The spec file, not src.
 
 ## Spooky Mocking at a Distance
 
-The `fn` is a decorator which adds the ability to easily redefine the function within the context of a single specific test.
+The `fn` is a decorator which adds the ability to easily redefine any function within the context of a single specific test.
 
 ```js
 import {fn} from '@jeffmcmahan/specjs'
