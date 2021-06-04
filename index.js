@@ -10,10 +10,12 @@ const runTests = async () => {
 	// Execute tests 1-at-a-time until they're all done.
 	// Note: Triggers tests, which are in continuation passing style.
 
+	if (!testStart) {
+		testStart = Date.now()
+	}
 	if (tests.length) {
 		mocks.clear()
 		if (!testCount) {
-			testStart = Date.now()
 			testCount = tests.length
 		}
 		tests.shift()(runTests)
