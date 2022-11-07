@@ -1,17 +1,9 @@
-import { execSync } from 'node:child_process'
 const tests = []
 const mocks = new Map
 const onReadyHandlers = []
 
 let testCount = 0
 let testStart = 0
-let testing = true
-
-process.on('unhandledRejection', () => {
-	if (test.beepOnFailure && testing) {
-		execSync(`afplay /System/Library/Sounds/Basso.aiff`)
-	}
-})
 
 const runTests = async () => {
 
@@ -34,7 +26,6 @@ const runTests = async () => {
 		if (testCount) {
 			console.log(`${ testCount } test(s) completed in ${ time }ms.`)
 		}
-		testing = false
 		onReadyHandlers.forEach(f => f())
 	}
 }
@@ -67,8 +58,6 @@ export const test = (...args) => {
 		tests.push(args[0])
 	}
 }
-
-test.beepOnFailure = false
 
 export const onReady = (
 

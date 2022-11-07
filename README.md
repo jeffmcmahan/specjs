@@ -77,20 +77,3 @@ test(async (done) => {
 ```
 
 When the test is `done()`, the dbQuery function's mock is released, and it goes back to firing the real I/O-inducing code.
-
-## Test Failure Beep (Mac only)
-
-When tests fail if .beepOnFailure is set to true, a system alert sound will play (MacOS only).
-
-```js
-import assert from 'node:assert/strict'
-import { test } from '@jeffmcmahan/specjs'
-
-test.beepOnFailure = true
-
-test((done) => {
-    assert.equal(1, 2)
-})
-
-// Beep
-```
