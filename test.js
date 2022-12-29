@@ -26,7 +26,7 @@ void (() => {
 
 	let testRan = false
 
-	test(done => {
+	test((done) => {
 		testRan = true
 		done()
 	})
