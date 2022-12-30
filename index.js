@@ -49,8 +49,11 @@ async function runTests () {
 	}
 }
 
-if (globalThis?.process?.env?.NODE_ENV !== 'development') {
-	onReadyHandlers.forEach(f => f())
+const nodeDev = (globalThis?.process?.env?.NODE_ENV !== 'development')
+const browserDev = (globalThis?.location?.hostname === 'localhost')
+
+if (!nodeDev && !browserDev) {
+	onReadyHandlers.forEach((f) => f())
 } else {
 	setTimeout(runTests)
 }
