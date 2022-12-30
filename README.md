@@ -99,3 +99,15 @@ test(async (done) => {
 ```
 
 When the test is `done()`, the dbQuery function's mock is released, and it goes back to firing the real I/O-inducing code.
+
+## Async Tests & onReady
+
+To avoid having the application start before asynchronous tests have finished, use the `onReady` event.
+
+```js
+import { onReady } from '@jeffmcmahan/specjs'
+
+onReady(() => {
+    // Start the app.
+})
+```
