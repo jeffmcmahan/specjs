@@ -49,7 +49,7 @@ async function runTests () {
 	}
 }
 
-const nodeDev = (globalThis?.process?.env?.NODE_ENV !== 'development')
+const nodeDev = (globalThis?.process?.env?.NODE_ENV === 'development')
 const browserDev = (globalThis?.location?.hostname === 'localhost')
 
 if (!nodeDev && !browserDev) {
