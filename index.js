@@ -53,7 +53,10 @@ const nodeDev = (globalThis?.process?.env?.NODE_ENV === 'development')
 const browserDev = (globalThis?.location?.hostname === 'localhost')
 
 if (!nodeDev && !browserDev) {
-	onReadyHandlers.forEach((f) => f())
+	setTimeout(() => {
+		mocks.clear()
+		onReadyHandlers.forEach((f) => f())
+	})
 } else {
 	setTimeout(runTests)
 }
