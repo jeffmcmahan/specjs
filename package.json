@@ -1,6 +1,6 @@
 {
   "name": "@jeffmcmahan/specjs",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "type": "module",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,9 @@
   },
   "author": "Jeff McMahan",
   "publishConfig": {
-     "access": "public"
+    "access": "public"
+  },
+  "dependencies": {
+    "@jeffmcmahan/specjs": "^0.2.3"
   }
 }
