@@ -53,10 +53,21 @@ const nodeDev = (globalThis?.process?.environment === 'development')
 const browserDev = (globalThis?.location?.hostname === 'localhost')
 
 if (!nodeDev && !browserDev) {
-	setTimeout(() => {
-		mocks.clear()
-		onReadyHandlers.forEach((f) => f())
-	})
+	
+	if (globalThis?.process) {
+		setTimeout(() => {
+			mocks.clear()
+			onReadyHandlers.forEach((f) => f())
+		})
+	}
+
+	if (globalThis?.location) {
+		window.addEventListener('DOMContentLoaded', () => {
+			mocks.clear()
+			onReadyHandlers.forEach((f) => f())
+		})
+	}
+
 } else if (browserDev) {
 	window.addEventListener('DOMContentLoaded', runTests)
 } else {
