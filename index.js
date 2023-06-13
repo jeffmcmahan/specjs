@@ -36,10 +36,28 @@ async function runTests () {
 	mocks.clear()
 
 	if (tests.length) {
+
 		if (!testStart) {
 			testStart = Date.now()
 		}
-		tests.shift()(runTests)
+
+		const test = tests.shift()
+		if (test.toString().includes('DESCRIPTION:')) {
+			const descOnset = test.toString().split('DESCRIPTION:')[1].trim()
+			let pos = 0
+			while (pos < descOnset.length) {
+				if (descOnset[ pos ] == '}') {
+					console.log('DESCRIPTION: ' + descOnset.slice(0, pos + 1).trim().replaceAll(/\s+/g, ' '))
+					break
+				}
+				pos++
+			}
+		} else {
+			console.log('Test has no DESCRIPTION block.')
+			console.log(test.toString())
+		}
+
+		test(runTests)
 	} else {
 		if (testCount) {
 			const time = (Date.now() - testStart)
