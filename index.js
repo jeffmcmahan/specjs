@@ -1,5 +1,5 @@
 const tests = []
-const mocks = new Map
+let mocks = new Map
 const onReadyHandlers = []
 
 let testCount = 0
@@ -16,19 +16,28 @@ export function fn(f) {
 
 export function test(...args) {
 	testCount++
-	if (args.length === 2) {
-		const [ meta, test ] = args
-		if (!meta.url.includes('/node_modules/')) {
-			test.url = meta.url.slice()
-			tests.push(test)
-		}
-	} else {
-		tests.push(args[ 0 ])
-	}
+	tests.push(args[ 0 ])
 }
 
 export function onReady(f) {
 	return onReadyHandlers.push(f)
+}
+
+function printDescription(test) {
+	if (test.toString().includes('DESCRIPTION:')) {
+		const descOnset = test.toString().split('DESCRIPTION:')[1].trim()
+		let pos = 0
+		while (pos < descOnset.length) {
+			if (descOnset[ pos ] == '}') {
+				console.log('DESCRIPTION: ' + descOnset.slice(0, pos + 1).trim().replaceAll(/\s+/g, ' '))
+				break
+			}
+			pos++
+		}
+	} else {
+		console.log('Test has no DESCRIPTION block.')
+		console.log(test.toString())
+	}
 }
 
 async function runTests () {
@@ -42,52 +51,40 @@ async function runTests () {
 		}
 
 		const test = tests.shift()
-		if (test.toString().includes('DESCRIPTION:')) {
-			const descOnset = test.toString().split('DESCRIPTION:')[1].trim()
-			let pos = 0
-			while (pos < descOnset.length) {
-				if (descOnset[ pos ] == '}') {
-					console.log('DESCRIPTION: ' + descOnset.slice(0, pos + 1).trim().replaceAll(/\s+/g, ' '))
-					break
-				}
-				pos++
-			}
-		} else {
-			console.log('Test has no DESCRIPTION block.')
-			console.log(test.toString())
-		}
-
+		printDescription(test)
 		test(runTests)
+
 	} else {
 		if (testCount) {
 			const time = (Date.now() - testStart)
 			console.log(`${ testCount } test(s) completed in ${ time }ms.`)
 		}
+
+		mocks.clear()
 		onReadyHandlers.forEach((f) => f())
 	}
 }
 
-const nodeDev = (globalThis?.process?.environment === 'development')
-const browserDev = (globalThis?.location?.hostname === 'localhost')
+export function setEnv(env) {
 
-if (!nodeDev && !browserDev) {
-	
-	if (globalThis?.process) {
-		setTimeout(() => {
-			mocks.clear()
-			onReadyHandlers.forEach((f) => f())
-		})
+	const node = (globalThis?.process)
+	const browser = (globalThis?.location)
+
+	if (env !== 'development') {
+		if (node) {
+			setTimeout(() => {
+				mocks.clear()
+				onReadyHandlers.forEach((f) => f())
+			})
+		} else if (browser) {
+			window.addEventListener('DOMContentLoaded', () => {
+				mocks.clear()
+				onReadyHandlers.forEach((f) => f())
+			})
+		}
+	} else if (browser) {
+		window.addEventListener('DOMContentLoaded', runTests)
+	} else {
+		setTimeout(runTests)
 	}
-
-	if (globalThis?.location) {
-		window.addEventListener('DOMContentLoaded', () => {
-			mocks.clear()
-			onReadyHandlers.forEach((f) => f())
-		})
-	}
-
-} else if (browserDev) {
-	window.addEventListener('DOMContentLoaded', runTests)
-} else {
-	setTimeout(runTests)
 }
